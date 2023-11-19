@@ -1,8 +1,8 @@
-// hotel
-
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
+
 using namespace std;
 
 struct LostItem
@@ -25,6 +25,7 @@ protected:
     string check_in_date;
     string check_out_date;
     string days;
+    string tot_price;
 
 public:
     void setGuestDetails()
@@ -39,7 +40,7 @@ public:
 
         if (room_choice == "AC")
         {
-            room_price = 6600.0;
+            room_price = 6000.0;
         }
         else if (room_choice == "Non-AC")
         {
@@ -52,7 +53,7 @@ public:
         }
 
         cout << "How would you like to pay, Sir/Madam?" << endl;
-        cout << "If paying by Online payment, specify the method. If by cash, mention 'Cash'.";
+        cout << "If paying by Online payment, specify the method. If by cash, mention 'Cash':";
         cin >> payment;
 
         cin.ignore();
@@ -66,8 +67,16 @@ public:
         cout << "Enter ID Proof: ";
         getline(cin, ID_proof);
 
-        cout << "How many nights you would like to stay?";
+        cout << "How many nights would you like to stay?:";
         getline(cin, days);
+        if (room_choice == "AC")
+        {
+            tot_price = to_string(stod(days)*6000);
+        }
+        else
+        {
+            tot_price = to_string(stod(days)*4000);
+        }
 
         cout << "Enter Check-in Date and Time: ";
         getline(cin, check_in_date);
@@ -75,20 +84,40 @@ public:
         cout << "Enter Check-out Date and Time: ";
         getline(cin, check_out_date);
 
+        // Open a file in append mode to store guest details
+        ofstream outFile("guest_details.txt", ios::app);
+
+        if (outFile.is_open())
+        {
+            // Write guest details to the file
+            outFile << "Guest Name: " << guest_name << "\n";
+            outFile << "Contact Number: " << contact_no << "\n";
+            outFile << "ID Proof: " << ID_proof << "\n";
+            outFile << "Check-in Date and Time: " << check_in_date << "\n";
+            outFile << "Check-out Date and Time: " << check_out_date << "\n";
+            outFile << "Room Price: Rs " << tot_price << "/-\n";
+            outFile << "-------------------------\n";
+
+            outFile.close();
+        }
+        else
+        {
+            cout << "Unable to open the file." << endl;
+        }
+
         cout << "Great, your room reservation has been recorded" << endl;
     }
 
     void printDetails()
     {
-        cout << "\t\t\t\t\t\t\t\t-------Reservation Details---------------" << endl;
+        cout << "\t\t\t\t\t\t\t\t\t-------Reservation Details---------------" << endl;
         cout << "\nGuest Details:\n";
         cout << "Guest Name: " << guest_name << endl;
-        cout << "Date of Birth: " << DOB << endl;
         cout << "Contact Number: " << contact_no << endl;
         cout << "ID Proof: " << ID_proof << endl;
         cout << "Check-in Date and Time: " << check_in_date << endl;
         cout << "Check-out Date and Time: " << check_out_date << endl;
-        cout << "Room Price: Rs" << room_price << "/-" << endl;
+        cout << "Room Price: Rs " << tot_price << "/-" << endl;
     }
 };
 
@@ -279,7 +308,6 @@ public:
         cout << "Lost item reported. Item ID: " << nextItemId << ", Name: " << newItem.itemName << endl;
         nextItemId++;
         cout << "Don't worry Sir/Madam, will contact you as soon as we get any news..." << endl;
-        ;
     }
 };
 
@@ -291,7 +319,7 @@ int main()
     Meals m;
     int choice;
 
-    cout << "\t\t\t\t\t\t\t\t\t\t\t-------WELCOME SIR/MADAM TO OUR HOTEL------" << endl;
+    cout << "\t\t\t\t\t\t\t\t-------WELCOME SIR/MADAM TO OUR HOTEL------" << endl;
 
     do
     {
@@ -299,7 +327,7 @@ int main()
         cout << "Press 2 for Knowing the Facilities and their Timings to use" << endl;
         cout << "Press 3 for having Food" << endl;
         cout << "Enter 4 for Staff Management" << endl;
-        cout << "Enter 5 for to report an Lost Item" << endl;
+        cout << "Enter 5 for to report a Lost Item" << endl;
         cout << "Enter 6 to Exit" << endl;
         cout << "Enter your choice: ";
         cin >> choice;
@@ -332,6 +360,7 @@ int main()
             cout << "\t\t\t\t\t\t\t\t\t\t------Report Lost Items Center------\n";
             cout << " Report a lost item\n";
             lf.reportLostItem();
+            break;
 
         case 6:
             cout << "Exiting the Hotel Management System. Thank you!" << endl;
